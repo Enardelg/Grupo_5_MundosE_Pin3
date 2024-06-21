@@ -24,7 +24,7 @@ then
     --nodes 3 \
     --node-type t2.micro \
     --with-oidc \
-    --ssh \
+     --ssh-access \
     --ssh-public-key final-mundosE \
     --managed \
     --zones us-east-1a,us-east-1b,us-east-1c
