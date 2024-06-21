@@ -12,18 +12,23 @@ if [ $? -eq 0 ] # Verifica si el comando anterior se ejecutó correctamente (es 
 then
   echo "Credenciales testeadas, proceder con la creacion de cluster."
 
-  # Creacion de cluster:   --full-ecr-access Proporciona acceso completo a Amazon Elastic Container Registry (ECR) para los nodos del clúster.
+  # Creacion de cluster:  
+  # --ssh-access \ Permite el acceso SSH a los nodos del clúster.
+  # --ssh-public-key final-mundosE \ Indicar el nombre de la key.pem.
+  # --managed \  Crea un clúster administrado por EKS.
+  # --full-ecr-access \ Proporciona acceso completo a Amazon Elastic Container Registry (ECR) para los nodos del clúster.
+  # --zones us-east-1a,us-east-1b,us-east-1c \  Define las zonas de disponibilidad en las que se distribuirán los nodos del clúster
   eksctl create cluster \
   --name $CLUSTER_NAME \
   --region $AWS_REGION \
   --nodes 3 \
   --node-type t2.micro \
-  --with-oidc \  # Habilita la autenticación OIDC (OpenID Connect) para el clúster.
-  --ssh-access \ # Permite el acceso SSH a los nodos del clúster.
-  --ssh-public-key final-mundosE \  # Indicar el nombre de la key.pem.
-  --managed \  # Crea un clúster administrado por EKS.
+  --with-oidc \  
+  --ssh-access \ 
+  --ssh-public-key final-mundosE \ 
+  --managed \  
   --full-ecr-access \ 
-  --zones us-east-1a,us-east-1b,us-east-1c # Define las zonas de disponibilidad en las que se distribuirán los nodos del clúster
+  --zones us-east-1a,us-east-1b,us-east-1c 
 
   if [ $? -eq 0 ]
   then
