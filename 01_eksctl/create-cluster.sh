@@ -22,7 +22,7 @@ then
     --name $CLUSTER_NAME \
     --region $AWS_REGION \
     --nodes 3 \
-    --node-type t3.small \
+    --node-type t3.medium \
     --with-oidc \
      --ssh-access \
     --ssh-public-key final-mundosE \
