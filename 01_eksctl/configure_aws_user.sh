@@ -7,3 +7,11 @@ CLUSTER_NAME=$2
 aws configure --profile $PROFILE_NAME
 # Actualiza kubeconfig para el nuevo usuario
 aws eks --region us-east-1 update-kubeconfig --name $CLUSTER_NAME --profile $PROFILE_NAME
+
+#!/bin/bash
+# Intenta obtener nodos y verifica que el acceso está prohibido
+kubectl get nodes
+if [ $? -eq 0 ]; then
+    echo "Expected forbidden error, but command succeeded."
+    exit 1
+fi
