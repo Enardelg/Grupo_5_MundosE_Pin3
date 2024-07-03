@@ -1,7 +1,8 @@
 #!/bin/bash
 # Recibe PROFILE_NAME como $1 y CLUSTER_NAME como $2
 PROFILE_NAME=$1
-CLUSTER_NAME=$2
+$AWS_REGION=$2
+CLUSTER_NAME=$3
 
 # Configura AWS CLI para el perfil del nuevo usuario
 aws configure --profile $PROFILE_NAME
