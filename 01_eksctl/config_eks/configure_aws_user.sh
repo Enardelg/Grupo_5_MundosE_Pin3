@@ -6,7 +6,7 @@ CLUSTER_NAME=$2
 # Configura AWS CLI para el perfil del nuevo usuario
 aws configure --profile $PROFILE_NAME
 # Actualiza kubeconfig para el nuevo usuario
-aws eks --region us-east-1 update-kubeconfig --name $CLUSTER_NAME --profile $PROFILE_NAME
+aws eks --region $AWS_REGION update-kubeconfig --name $CLUSTER_NAME --profile $PROFILE_NAME
 
 #!/bin/bash
 # Intenta obtener nodos y verifica que el acceso está prohibido
