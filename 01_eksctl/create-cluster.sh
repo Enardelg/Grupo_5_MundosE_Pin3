@@ -1,7 +1,6 @@
 #!/bin/bash
 
    # Variables
- CLUSTER_NAME=eks-mundos-e
  AWS_REGION=us-east-1
    # Establecer credenciales de AWS 
    # Este comando verifica las credenciales de AWS para asegurarse de que estén configuradas correctamente.
