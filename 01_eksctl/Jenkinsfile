@@ -1,0 +1,26 @@
+pipeline {
+  agent any
+  stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'main', credentialsId: env.GIT_CREDENTIAL_ID, url: env.REPO_URL
+      }
+    }
+    // Asegúrate de que el plugin de SSH esté instalado antes de usar sshagent
+    stage('Deploy to AWS') {
+      steps {
+        sshagent(['ssh-key']) {
+          sh "scp -o StrictHostKeyChecking=no ${env.WORKSPACE}/01_eksctl/create-cluster.sh $SERVER:${env.SCRIPT_PATH}"
+          sh "ssh $SERVER ls -lrt ${env.SCRIPT_PATH}" // Verifica que el script esté en la ubicación correcta
+        }
+      }
+    }
+    stage('Execute Script on AWS') {
+      steps {
+        sshagent(['ssh-key']) {
+          sh "ssh $SERVER 'bash ${env.SCRIPT_PATH}'" // Ejecuta el script en la instancia EC2
+        }
+      }
+    }
+  }
+}
