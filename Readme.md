@@ -7,7 +7,7 @@ Durante la  primera parte nos centramos en la creación de una instancia de `EC2
 necesarias. 
 
 
-En la segunda parte, configuramos la part de monitoreo de pods con el stack de `Prometheus` y `Grafana`
+En segundo lugar, configuramos aplicamos el debido monitoreo de pods con el stack de `Prometheus` y `Grafana`.
 
 
 
