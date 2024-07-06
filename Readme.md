@@ -1,7 +1,7 @@
 # Proyecto Devops 2024
 
 
-Este proyecto tiene como idea principal el aprendizaje sobre distintos temas y poner en práctica lo aprendido a través de un laboratorio que permita integrar diferentes herramientas y tecnologías.
+Este proyecto tiene como idea principal el aprendizaje sobre distintos temas y poner en práctica lo aprendido a través de un laboratorio que permita integrar diferentes herramientas y tecnologías. Realizando un especial foco en implementar herramientas de `CI/CD`, en esta oportunidad se implementa `Jenkins` y `Git Hub Actions`.
 
 Durante la  primera parte nos centramos en la creación de una instancia de `EC2` en AWS para poder desde allí realizar todas las tareas
 necesarias. 
