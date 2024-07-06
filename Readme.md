@@ -1,4 +1,4 @@
-# Proyecto Devops 2023
+# Proyecto Devops 2024
 
 
 Este proyecto tiene como idea principal el aprendizaje sobre distintos temas y poner en práctica lo aprendido a través de un laboratorio que permita integrar diferentes herramientas y tecnologías.
