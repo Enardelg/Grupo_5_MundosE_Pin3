@@ -15,16 +15,16 @@ En segundo lugar, configuramos aplicamos el debido monitoreo de pods con el stac
 
 ## Contenido del proyecto
 
-1. Crear y configurar instancia EC2
+1. Crear y configurar instancia `EC2`
 
-2. Configurar instancia y cliente aws
+2. Configurar instancia y `cliente aws`
 
-3. Crear cluster con eksctl
+3. Crear clúster con `eksctl`
 
-4. Configurar kubectl
+4. Configurar `kubectl`
 
-5. Github Actions
+5. `Github Actions`
 
-6. Jenkins
+6. `Jenkins`
 
-9. Herramientas de monitoreo
+9. Herramientas de monitoreo: `Grafana`, `K9S`, `Prometheus`
