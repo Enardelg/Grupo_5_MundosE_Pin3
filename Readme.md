@@ -4,16 +4,14 @@
 Este proyecto tiene como idea principal el aprendizaje sobre distintos temas y poner en práctica lo aprendido a través de un laboratorio que permita integrar diferentes herramientas y tecnologías.
 
 Durante la  primera parte nos centramos en la creación de una instancia de `EC2` en AWS para poder desde allí realizar todas las tareas
- necesarias. 
+necesarias. 
 
 
-En la segunda parte, configuraremos monitoreo de log con el stack de  `Elastic`, `FluentBit` y `Kibana`, el cual nos permitio ver los logs 
-de nginx corriendo el el cluster 
-Por último, configuramos la part de monitoreo de pods con el stack de `prometheus` y `grafana` `Prometheus`
+En la segunda parte, configuramos la part de monitoreo de pods con el stack de `Prometheus` y `Grafana`
 
 
 
-![arquitectura](img/arquitecture.png)
+![arquitectura](https://media.dev.to/cdn-cgi/image/width=1600,height=900,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fvbye6pwecpbr35c1w9j2.png)
 
 ## Contenido del proyecto
 
@@ -23,27 +21,10 @@ Por último, configuramos la part de monitoreo de pods con el stack de `promethe
 
 3. Crear cluster con eksctl
 
-4. Crear cluster con terraform
+4. Configurar kubectl
 
-5. Configurar kubectl
+5. Github Actions
 
-6. Github Actions
+6. Jenkins
 
 9. Herramientas de monitoreo
-
-
-# Bibliografía
-
-<!-- #  Docker Compose Examples // -->
-
-<!--
-- [Compose101 Slides](https://www.slideshare.net/ajeetraina/introduction-to-docker-compose-docker-intermediate-workshop)
-- [Introduction to Docker Compose](http://dockerlabs.collabnix.com/intermediate/docker-compose/)
-- [Dockerfile Vs Docker compose ](http://dockerlabs.collabnix.com/intermediate/workshop/DockerCompose/Difference_between_dockerfile_and_docker_compose.html)
-- [How to Install Docker Compose? ](http://dockerlabs.collabnix.com/intermediate/workshop/DockerCompose/How_to_Install_Docker_Compose.html)
-
-### Kubernetes
-- [Setup AWS Free Tier](https://cloudkatha.com/how-to-setup-your-aws-free-tier-account-the-right-way/)
-
-### Monitoreo
--->
