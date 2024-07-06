@@ -11,7 +11,7 @@ En segundo lugar, configuramos aplicamos el debido monitoreo de pods con el stac
 
 
 
-![arquitectura](https://media.dev.to/cdn-cgi/image/width=1600,height=900,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fvbye6pwecpbr35c1w9j2.png)
+![arquitectura](img/bannerFinal.jpg)
 
 ## Contenido del proyecto
 
