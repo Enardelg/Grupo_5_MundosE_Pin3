@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+
+        stages {
+        stage('Prepare kubectl') {
+            steps {
+                sshagent(['ssh-key']) {
+                    script {
+                        def result = sh(script: """
+                            ssh -o StrictHostKeyChecking=no $SERVER aws eks --region $REGION describe-cluster --name $CLUSTER_NAME
+                        """, returnStatus: true)
+                        if (result != 0) {
+                            error "No se encontró ningún clúster EKS con el nombre $CLUSTER_NAME en la región $REGION"
+                        } else {
+                            sh """
+                                ssh -o StrictHostKeyChecking=no $SERVER aws eks --region $REGION update-kubeconfig --name $CLUSTER_NAME
+                            """
+                        }
+                    }
+                }
+            }
+        }    
+
+        stage('Configure AWS Profile') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh """
+                        ssh $SERVER "
+                            aws configure set aws_access_key_id ${env.access_id} && 
+                            aws configure set aws_secret_access_key ${env.secret_id} && 
+                            aws configure set region $REGION && 
+                            aws configure set output 'json'
+                        "
+                    """
+                }
+            }
+        }
+
+        stage('Update kubeconfig for User') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh """
+                        ssh $SERVER "aws eks --region $REGION update-kubeconfig --name $CLUSTER_NAME --profile $AWS_PROFILE"
+                    """
+                }
+            }
+        }
+
+        stage('Check kubectl Version') {
+            steps {
+                sshagent(['ssh-key']) {
+                    script {
+                        def kubectlPath = "/home/ubuntu/bin/kubectl"
+                        def result = sh(script: "ssh $SERVER '${kubectlPath} version --client'", returnStatus: true)
+                        if (result != 0) {
+                            error "No se pudo verificar la versión de kubectl"
+                        } else {
+                            echo "Verificación de la versión de kubectl exitosa"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Check Cluster Access') {
+            steps {
+                sshagent(['ssh-key']) {
+                    script {
+                        def kubectlPath = "/home/ubuntu/bin/kubectl"
+                        def result = sh(script: "ssh $SERVER '${kubectlPath} get nodes'", returnStatus: true)
+                        if (result != 0) {
+                            echo "El usuario no tiene acceso a datos del cluster"
+                        } else {
+                            echo "El usuario está habilitado para realizar consultas al cluster"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
