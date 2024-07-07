@@ -1,0 +1,46 @@
+                                       --GRAFANA--
+1-. Crea el espacio para grafana
+kubectl create namespace grafana
+2-. Agregar el repositorio de Helm de Grafana:
+helm repo add grafana https://grafana.github.io/helm-charts
+3-. Actualiza los repositorios de Helm
+helm repo update
+4-. Cree un archivo YAML llamado grafana.yml
+helm install grafana grafana/grafana \
+  --namespace grafana \
+  --set persistence.storageClassName="gp2" \
+  --set persistence.enabled=true \
+  --set adminPassword=cuturul \
+  --values /home/ubuntu/grafana/grafana.yml \
+  --set service.type=LoadBalancer \
+  --force
+5-. Compruebe si Grafana se despliega correctamente
+kubectl get all -n grafana
+6-. Obtener la url del loadbalancer de Grafana
+export ELB=$(kubectl get svc -n grafana grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+echo "http://$ELB"
+7-. Utilice el nombre de usuario "admin" y obtenga la contraseña ejecutando lo siguiente:
+kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode; echo
+8-. Obtener los servicios, copiar el link del loadbalancer para acceder al dash de grafana
+kubectl get svc -n grafana
+9-. Por si necesitas volver a instalar algo
+helm uninstall grafana -n grafana
+----------------------------------------------------------------------------------------------------------------------------
+||DATASO||
+*Instalar k9s --> sudo snap install k9s
+Copiar archivo y pegarlo en bin
+sudo cp -p k9s /usr/bin
+ctrl+? --> lista de comandos
+*watch kubectl get pod -A --> ver en tiempo real los pods
+
+*obtener nombre node-group
+get nodegroups --cluster eks-mundos-e
+
+*obtener informacion de errores
+get events -n kube-system
+
+Revisa las cuentas de servicio en el namespace kube-system:
+*kubectl get serviceaccounts -n kube-system
+
+Verifica que la cuenta de servicio tiene el rol asociado:
+*kubectl describe serviceaccount ebs-csi-controller-sa -n kube-system
