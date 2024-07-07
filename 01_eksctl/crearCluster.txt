@@ -1,0 +1,17 @@
+Crear un cluster con eksctl
+1-. Se genera un archivo sh que esta en el repo.
+2-. Desde un pipeline de Jenkins, se comunica via SSH con la instancia EC2 que va a recibir el archivo SSH con las
+instrucciones para generar el cluster ATENCION!! para comunicarte con Jenkins a la instancia, previamente debes haber 
+creado una clave SSH privada y pública, necesitarás la clave privada para incluir en el pipeline.
+||VALORES DE VARIABLES||
+environment {
+        // Define tus variables de entorno aquí
+        SERVER = ''
+        SCRIPT_PATH = ''
+        GIT_CREDENTIAL_ID = ''
+        REPO_URL = ''
+    }
+3.- Comando para devolver los detalles del usuario de IAM para el designated_user.
+aws sts get-caller-identity
+||ELIMINAR CLUSTER||
+eksctl delete cluster --name <nombre-cluster>
