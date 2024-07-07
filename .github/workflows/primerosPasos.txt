@@ -1,0 +1,22 @@
+Generar gitActions para comunicarse por via SSH:
+1. Generate SSH Key
+cd ~/.ssh
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com" (ingresa tu emal entre las comillas)
+ingresa el nombre de key: github-actions
+campo para contraseña: opcional, puede ir vacio
+Ejecuta ls para ver sus claves en la carpeta .ssh
+2.Agregar la clave pública a las claves_autorizadas
+Necesitamos agregar la clave pública ( github-actions.pub) para authorized_keysque las máquinas que usan la clave privada ( github-actions) puedan acceder al servidor.
+cat github-actions.pub >> ~/.ssh/authorized_keys
+Esto es lo que hace el comando:
+Coge el contenido de github-actions.pub con cat.
+Añadir a ~/.ssh/authorized_keyscon >>.
+
+3. Establecer secretos de Github
+SSH_PRIVATE_KEY: ssh key privada que creamos en ec2
+HOST_NAME / IP_ADDRESS: IP elástica o IP de EC2
+USER_NAME: nombre de usuario del usuario de ec2
+
+4. Template de la actions: -- modificar branches, y luego de run: |  el codigo segun nun
+* echo "$PRIVATE_KEY" > private_key: Toma el contenido de la variable de entorno PRIVATE_KEY, que debería contener tu clave privada SSH, y lo redirige a un archivo llamado private_key. Esto efectivamente guarda la clave privada en un archivo en el sistema.
+&& chmod 600 private_key: El operador && asegura que el segundo comando se ejecute solo si el primero se ejecuta con éxito. El comando chmod 600 private_key cambia los permisos del archivo private_key para que solo el usuario propietario pueda leer y escribir en él (y nadie más puede leer, escribir o ejecutar). Estos permisos son necesarios para las claves privadas SSH por razones de seguridad.
