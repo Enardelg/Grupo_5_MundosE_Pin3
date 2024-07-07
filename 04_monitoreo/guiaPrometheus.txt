@@ -1,0 +1,58 @@
+                                                 --PROMETHEUS--
+* Aplica recursos del controlador Amazon EBS CSI (Container Storage Interface) en tu clúster
+kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.32"
+----------------------------------------------------------------------------------------------------------------------------
+Configurar e instalar Prometheus en tu clúster Kubernetes utilizando Helm
+1-. Crear el espacio 
+kubectl create namespace prometheus
+2-. Agregar un repositorio de Helm a tu entorno local
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+3-. Instalar Prometheus con volúmens persistentes:
+* helm install prometheus prometheus-community/prometheus \
+  --namespace prometheus \
+  --set alertmanager.persistentVolume.storageClass="gp2" \
+* helm install alertmanager prometheus-community/alertmanager \
+  --namespace prometheus \
+  --set alertmanager.persistentVolume.storageClass="gp2"
+||IMPORTANTE|| Tome nota del punto final de Prometheus en la respuesta del timón (lo necesitará más adelante). Debería verse similar al siguiente:
+The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
+*prometheus-server.prometheus.svc.cluster.local*
+||IMPORTANTE|| *Puede pasar que no se levante alert-manager, la solución está en editar el documento en la sección (spec)
+kubectl edit pvc storage-prometheus-alertmanager-0 -n prometheus
+
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: "2024-06-30T17:15:15Z"
+  finalizers:
+  - kubernetes.io/pvc-protection
+  labels:
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/name: alertmanager
+  name: storage-prometheus-alertmanager-0
+  namespace: prometheus
+  resourceVersion: "9603"
+  uid: b41ee3af-f758-4a4e-86bf-910af1183cc8
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: gp2  # ACA TA EL PROBLEMA
+  volumeMode: Filesystem
+status:
+  phase: Pending
+
+Tips!!!!
+**Compatibilidad de versiones del gráfico Helm:
+Asegúrate de que estás usando una versión compatible del gráfico Helm de Alertmanager. Es posible que las versiones anteriores no admitan la configuración storageClassdirecta del parámetro, lo que requiere la configuración manual de PVC. Consulta la documentación del gráfico Helm para conocer la versión compatible y actualízala si es necesario.
+**Desinstala la instancia de Prometheus que se encuentra en el namespace por default
+ helm uninstall prometheus --namespace default
+
+4-. Verificar si los pods estan activos
+kubectl get pods --namespace=prometheus
+5-. ¡Alertmanager y server pod están en paso pendiente!
+esto ocurre porque el servidor prometheus quiere utilizar el controlador ebs pero no hay ningún controlador ebs csi instalado.
+6-.  Crear un proveedor de identidad IAM OIDC
+eksctl upgrade cluster --name eks-mundos-e --approve
+eksctl utils associate-iam-oidc-provider --region=us-east-1 --cluster=kubectl-cluster --approve
