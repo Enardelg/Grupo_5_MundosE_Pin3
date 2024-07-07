@@ -1,0 +1,8 @@
+Archivo ConfigMap aws-auth:
+
+Un ConfigMap en Kubernetes se utiliza para almacenar datos de configuración no confidenciales en pares clave-valor. Los pods pueden consumir estos datos de configuración como variables de entorno, argumentos de línea de comandos o archivos en un volumen.
+
+||ATENCION|| Para editar el archivo  ConfigMap aws-auth, el user admin debe tener los siguientes politcas:
+*AmazonEKSClusterPolicy
+*IAMFullAccess
+*AmazonEC2ReadOnlyAccess
