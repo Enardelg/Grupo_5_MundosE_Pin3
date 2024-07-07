@@ -37,3 +37,23 @@ kubectl describe configmap aws-auth -n kube-system
 kubectl get nodes
 ** Ahora ya como esta agregado el usuario, tienes acceso al cluster :)
 
+||EXTRA||
+* Editar confiMap para roles
+1-. crear este yml --> admin-configmap-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-configmap-binding
+subjects:
+- kind: User
+  name: admin
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+2-. Aplicar el archivo YAML
+kubectl apply -f admin-configmap-binding.yaml
+3-. Verificar los permisos
+kubectl auth can-i update configmaps --namespace kube-system --as admin
+
