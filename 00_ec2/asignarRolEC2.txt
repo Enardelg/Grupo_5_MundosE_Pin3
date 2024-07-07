@@ -1,0 +1,14 @@
+Asignar rol a EC2
+Crear el rol IAM:
+Ve a la consola de IAM en AWS.
+En el panel de navegación, haz clic en Roles y luego en Create role.
+Selecciona EC2 como el tipo de servicio que usará el rol y haz clic en Next: Permissions.
+En la lista de políticas adjuntas, busca y selecciona AdministratorAccess.
+Asigna un nombre al rol, por ejemplo, ec2-admin-role
+Haz clic en Create role.
+Asignar el rol a la instancia EC2:
+Ve a la consola de EC2.
+Selecciona la instancia EC2 a la que deseas asignar el rol.
+En el panel de detalles, busca la sección “Security” y haz clic en “Actions”, luego en “Security”, y selecciona “Modify IAM role”.
+Elige el rol IAM ec2-admin-role que acabas de crear desde el menú desplegable.
+Haz clic en “Save” para aplicar los cambios.
