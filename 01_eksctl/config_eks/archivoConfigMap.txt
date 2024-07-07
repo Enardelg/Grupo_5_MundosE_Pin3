@@ -6,3 +6,34 @@ Un ConfigMap en Kubernetes se utiliza para almacenar datos de configuración no 
 *AmazonEKSClusterPolicy
 *IAMFullAccess
 *AmazonEC2ReadOnlyAccess
+
+1-. Preparar kubectl para comunicarse con el cluster
+aws eks --region us-east-1 update-kubeconfig --name eks-mundos-e
+2-. Intentar ver contenido con otro usuario
+aws configure --profile <nombre-usuario>
+3-. Configura kubeconfig para el usuario anteriormente insertado
+aws eks --region us-east-1 update-kubeconfig --name <nombre-cluster> --profile <nombre-usuario>
+4-. Intenta ver info del cluster
+kubectl get nodes
+**tendria que figurar este error: 
+Error from server (Forbidden): nodes is forbidden: User "arn:aws:iam::123456789012:user/new-user" cannot list resource "nodes" in API group "" at the cluster scope
+
+Editar archivo ConfigMap aws-auth:
+1-. kubectl edit configmap aws-auth -n kube-system
+Agrega este bloque de codigo: 
+
+mapUsers: |
+    - userarn: arn:aws:iam::123456789012:user/your-iam-user
+      username: your-iam-user
+      groups:
+        - system:masters
+
+2-. Verificar configuracion
+kubectl get configmap -n kube-system
+Una forma rápida y útil de listar y verificar todos los ConfigMaps presentes en el namespace kube-system. Esto puede ayudarte a asegurar que los componentes del sistema de Kubernetes están correctamente configurados y operativos.
+3-. Ver el archivo ConfigMap
+kubectl describe configmap aws-auth -n kube-system
+4-. Intenta ver info del cluster
+kubectl get nodes
+** Ahora ya como esta agregado el usuario, tienes acceso al cluster :)
+
