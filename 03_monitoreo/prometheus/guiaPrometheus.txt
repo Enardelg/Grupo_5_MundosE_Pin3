@@ -49,10 +49,6 @@ Asegúrate de que estás usando una versión compatible del gráfico Helm de Ale
 admitan la configuración storageClassdirecta del parámetro, lo que requiere la configuración manual de PVC. Consulta la documentación 
 del gráfico Helm para conocer la versión compatible y actualízala si es necesario.
 
-||ELIMINAR NAMESPACE PROMETHEUS||
-kubectl delete all --all -n prometheus
-kubectl delete namespace prometheus
-
 **En el caso de tener problemas con los comandos, desinstala la instancia de Prometheus que se encuentra en el namespace por default
 helm uninstall prometheus --namespace default
 
