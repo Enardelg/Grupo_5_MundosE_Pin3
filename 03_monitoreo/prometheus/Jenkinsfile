@@ -1,0 +1,101 @@
+pipeline {
+    agent any
+    stages {
+        stage('Connect to EC2 Instance') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ${SERVER} echo "Connected to EC2 instance"'
+                }
+            }
+        }
+        stage('Create Prometheus Namespace') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ${SERVER} ${kubectlPath} create namespace prometheus'
+                }
+            }
+        }
+        stage('Add Helm Repository') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ${SERVER} helm repo add prometheus-community https://prometheus-community.github.io/helm-charts'
+                }
+            }
+        }
+        stage('Install Prometheus and Alertmanager with Persistent Volumes') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ${SERVER} helm install prometheus prometheus-community/prometheus \
+                          --namespace prometheus \
+                          --set alertmanager.persistentVolume.storageClass="gp2"
+
+                        ssh -o StrictHostKeyChecking=no ${SERVER} helm install alertmanager prometheus-community/alertmanager \
+                          --namespace prometheus \
+                          --set alertmanager.persistentVolume.storageClass="gp2"
+                    '''
+                }
+            }
+        }
+        stage('Verify Prometheus Pods Status') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ${SERVER} ${kubectlPath} get pods --namespace=prometheus'
+                }
+            }
+        }
+        stage('Create IAM OIDC Provider') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ${SERVER} eksctl upgrade cluster --name $CLUSTER_NAME --approve
+                        ssh -o StrictHostKeyChecking=no ${SERVER} eksctl utils associate-iam-oidc-provider --region=$AWS_REGION --cluster=$CLUSTER_NAME --approve
+                    '''
+                }
+            }
+        }
+        stage('Check Amazon EBS CSI Driver Addon Versions') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ${SERVER} aws eks describe-addon-versions --addon-name aws-ebs-csi-driver'
+                }
+            }
+        }
+        stage('Install Amazon EBS CSI Driver Addon') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ${SERVER} eksctl create addon --name aws-ebs-csi-driver \
+                          --cluster $CLUSTER_NAME \
+                          --service-account-role-arn $SERVICE_ACCOUNT_ROLE_ARN \
+                          --force
+                    '''
+                }
+            }
+        }
+        stage('Verify EBS CSI Driver Addon Version') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ${SERVER} eksctl get addon --name aws-ebs-csi-driver --cluster $CLUSTER_NAME'
+                }
+            }
+        }
+        stage('Update EBS CSI Driver Addon') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ${SERVER} eksctl upgrade cluster --name $CLUSTER_NAME --approve
+                    '''
+                }
+            }
+        }
+        stage('Verify Prometheus Pods Status Again') {
+            steps {
+                sshagent(['ssh-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ${SERVER} ${kubectlPath} get pods --namespace=prometheus'
+                }
+            }
+        }
+        
+    }
+}
