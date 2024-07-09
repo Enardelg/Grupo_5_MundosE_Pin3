@@ -11,7 +11,7 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 #3-. Instalar Prometheus con volúmens persistentes:
 helm install prometheus prometheus-community/prometheus \
   --namespace prometheus \
-  --set alertmanager.persistentVolume.storageClass="gp2" \
+  --set alertmanager.persistentVolume.storageClass="gp2" && \
 helm install alertmanager prometheus-community/alertmanager \
   --namespace prometheus \
   --set alertmanager.persistentVolume.storageClass="gp2"
