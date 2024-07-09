@@ -1,3 +1,4 @@
+#!/bin/bash
 #  --GRAFANA--
 # 1-. Crea el espacio para grafana
 kubectl create namespace grafana
