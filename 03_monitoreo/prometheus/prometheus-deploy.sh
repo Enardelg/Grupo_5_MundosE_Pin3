@@ -18,7 +18,24 @@ helm install alertmanager prometheus-community/alertmanager \
 #||IMPORTANTE|| Tome nota del punto final de Prometheus en la respuesta del timón (lo necesitará más adelante). Debería verse similar al siguiente:
 #The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
 #*prometheus-server.prometheus.svc.cluster.local*
-#||IMPORTANTE|| *Puede pasar que no se levante alert-manager, la solución está en editar el documento en la sección (spec)
+#||IMPORTANTE|| *Puede pasar que no veas Bound en estos recursos: prometheus-server, storage-alertmanager-0, storage-prometheus-alertmanager-0
+kubectl get pvc -n prometheus
+# crea un archivo persistent-volume.yml 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-pvc
+  namespace: prometheus  # Asegúrate de especificar el namespace correcto
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi  # Tamaño del almacenamiento requerido
+  storageClassName: gp2  # Asegúrate de usar el storageClassName correcto
+kubectl apply -f persistent-volume.yml
+
+# Sino edita el recurso que presenta "pending", en el apartado (spec) por ejemplo:
 kubectl edit pvc storage-prometheus-alertmanager-0 -n prometheus
 
 kind: PersistentVolumeClaim
@@ -77,8 +94,8 @@ eksctl update addon --name aws-ebs-csi-driver --version v1.11.4-eksbuild.1 --clu
   --service-account-role-arn arn:aws:iam::111122223333:role/AmazonEKS_EBS_CSI_DriverRole --force
 #11-. Verificar si los pods estan activos
 kubectl get pods --namespace=prometheus
-#12-. Etiquete el pod del servidor Prometheus para conectarlo con el servicio
-deberia ser el name de este (prometheus-server)
+#12-. Etiquete el pod del servidor Prometheus para conectarlo con el servicio deberia ser el name de este (prometheus-server)
+kubectl label pod <pod-name> app=prometheus
 #13-. Redirigir puerto
 kubectl port-forward -n prometheus deploy/prometheus-server 8080:9090 --address 0.0.0.0
 #14-. habilitar puerto 8080 en Ec2
