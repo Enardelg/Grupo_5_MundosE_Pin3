@@ -9,7 +9,7 @@ necesarias. En cada carpeta encontrarás archivos `txt` que te explicarán los p
 Como segunda etapa, generamos un clúster de Kubernetes `EKS` implementando `EKSCTL` (herramienta oficial de AWS, para crear y gestionar clústers).
 
 
-Finalmente, con el stack de `Prometheus` y `Grafana`, realizamos el monitoreo del estado y el uso de recursos de los nodos de nuestro `ESK` generado.
+Finalmente, con el stack de `Prometheus` y `Grafana`, realizamos el monitoreo del estado y el uso de recursos de los nodos de nuestro `EKS` generado.
 
 
 
